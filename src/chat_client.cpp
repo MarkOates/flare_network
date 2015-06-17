@@ -208,7 +208,11 @@ public:
 
 		client = new chat_client(io_service_loc, endpoint_iterator);
 	    //thread = new std::thread([&io_service_loc](){ io_service_loc.run(); });
-	    thread = new std::thread([this](){ io_service_loc.run(); });
+	    thread = new std::thread([this](){
+			if (io_service_loc.stopped()) io_service_loc.reset(); // reset is required if the io_service has stopped
+			io_service_loc.run();
+			std::cout << "past io_service_loc.run()" << std::endl;
+		});
 
 		connected = true;
 

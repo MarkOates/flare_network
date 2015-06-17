@@ -4,11 +4,14 @@
 CC=g++
 
 
+all:
+	@echo Usage: \"make server\" OR \"make client_ex\"
+
+
 server:
-	$(CC) -std=gnu++11 ./src/chat_server.cpp -o chat_server -I/usr/include -lboost_system -pthread
+	$(CC) -std=gnu++11 ./src/chat_server.cpp -o ./bin/chat_server -I/usr/include -I./include -lboost_system -pthread
 
-
-client:
-	$(CC) -std=gnu++11 ./src/chat_client.cpp ./src/chat_client_ex.cpp -o chat_client_ex -I/usr/include -lboost_system -pthread
+client_ex:
+	$(CC) -std=gnu++11 ./src/chat_client.cpp ./examples/chat_client_ex.cpp -o ./bin/chat_client_ex -I/usr/include -I./include -lboost_system -pthread
 
 

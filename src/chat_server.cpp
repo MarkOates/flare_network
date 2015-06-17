@@ -6,7 +6,7 @@
 #include <set>
 #include <utility>
 #include <boost/asio.hpp>
-#include "chat_message.hpp"
+#include "network_message.hpp"
 
 using boost::asio::ip::tcp;
 
@@ -16,7 +16,7 @@ class ChatUser
 {
 public:
 	virtual ~ChatUser() {}
-	virtual void deliver(const ChatMessage& msg) = 0;
+	virtual void deliver(const NetworkMessage& msg) = 0;
 };
 
 typedef std::shared_ptr<ChatUser> ChatUser_ptr;
@@ -28,7 +28,7 @@ class ChatRoom
 private:
 	std::set<ChatUser_ptr> users;
 	int max_recent_msgs;
-	std::deque<ChatMessage> recent_msgs_;
+	std::deque<NetworkMessage> recent_msgs_;
 
 public:
 	ChatRoom()
@@ -52,7 +52,7 @@ public:
 		std::cout << "Participant (" << user << ") left" << std::endl;
 	}
 
-	void deliver(const ChatMessage& msg)
+	void deliver(const NetworkMessage& msg)
 	{
 		recent_msgs_.push_back(msg);
 
@@ -71,8 +71,8 @@ class ChatUserSession : public ChatUser, public std::enable_shared_from_this<Cha
 private:
 	tcp::socket socket_;
 	ChatRoom& room_;
-	ChatMessage read_msg_;
-	std::deque<ChatMessage> write_msgs_;
+	NetworkMessage read_msg_;
+	std::deque<NetworkMessage> write_msgs_;
 
 public:
 	ChatUserSession(tcp::socket socket, ChatRoom& room)
@@ -88,7 +88,7 @@ public:
 		do_read_header();
 	}
 
-	void deliver(const ChatMessage& msg)
+	void deliver(const NetworkMessage& msg)
 	{
 		bool write_in_progress = !write_msgs_.empty();
 		write_msgs_.push_back(msg);
@@ -102,7 +102,7 @@ private:
   void do_read_header()
   {
     auto self(shared_from_this());
-    boost::asio::async_read(socket_, boost::asio::buffer(read_msg_.data(), ChatMessage::header_length),
+    boost::asio::async_read(socket_, boost::asio::buffer(read_msg_.data(), NetworkMessage::header_length),
         [this, self](boost::system::error_code ec, std::size_t /*length*/)
         {
           if (!ec && read_msg_.decode_header())

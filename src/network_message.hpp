@@ -5,13 +5,13 @@
 #include <cstdlib>
 #include <cstring>
 
-class ChatMessage
+class NetworkMessage
 {
 public:
   enum { header_length = 4 };
   enum { max_body_length = 512 };
 
-  ChatMessage()
+  NetworkMessage()
     : body_length_(0)
   {
   }

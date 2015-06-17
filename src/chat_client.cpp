@@ -14,7 +14,7 @@
 #include <boost/bind.hpp>
 #include <boost/function.hpp>
 #include <boost/thread/mutex.hpp>
-#include "chat_message.hpp"
+#include "network_message.hpp"
 
 
 
@@ -47,8 +47,8 @@ class chat_client
 private:
 	boost::asio::io_service& io_service_;
 	tcp::socket socket_;
-	ChatMessage read_msg_;
-	std::deque<ChatMessage> write_msgs_;
+	NetworkMessage read_msg_;
+	std::deque<NetworkMessage> write_msgs_;
 
 public:
 	chat_client(boost::asio::io_service& io_service, tcp::resolver::iterator endpoint_iterator)
@@ -58,7 +58,7 @@ public:
 		do_connect(endpoint_iterator);
 	}
 
-  void write(const ChatMessage& msg)
+  void write(const NetworkMessage& msg)
   {
     io_service_.post(
         [this, msg]()
@@ -93,7 +93,7 @@ private:
   void do_read_header()
   {
     boost::asio::async_read(socket_,
-        boost::asio::buffer(read_msg_.data(), ChatMessage::header_length),
+        boost::asio::buffer(read_msg_.data(), NetworkMessage::header_length),
         [this](boost::system::error_code ec, std::size_t /*length*/)
         {
           if (!ec && read_msg_.decode_header())
@@ -160,7 +160,7 @@ private:
 
 	void send_network_message(chat_client &c, char* line)
 	{
-		ChatMessage message;
+		NetworkMessage message;
 		message.body_length(std::strlen(line));
 		std::memcpy(message.body(), line, message.body_length());
 		message.encode_header();
@@ -300,8 +300,8 @@ bool NetworkService::is_connected()
 
 bool NetworkService::send_message(std::string message)
 {
-	if (message.length() < ChatMessage::max_body_length)
-		message.resize(ChatMessage::max_body_length);
+	if (message.length() < NetworkMessage::max_body_length)
+		message.resize(NetworkMessage::max_body_length);
 	char *argv1 = new char[message.length() + 1];
 	strcpy(argv1, message.c_str());
 

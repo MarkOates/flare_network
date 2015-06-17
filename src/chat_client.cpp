@@ -190,6 +190,10 @@ public:
 		, connected(false)
 	{
 	}
+	bool is_connected()
+	{
+		return connected;
+	}
 	bool send_message(char* line)
 	{
 		if (!connected) return false;
@@ -280,6 +284,12 @@ bool NetworkService::connect(std::string url_or_ip, std::string port_num)
 bool NetworkService::disconnect()
 {
 	return _service->disconnect();
+}
+
+
+bool NetworkService::is_connected()
+{
+	return _service->is_connected();
 }
 
 

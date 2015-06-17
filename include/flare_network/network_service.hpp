@@ -31,6 +31,7 @@ public:
 
 	bool connect(std::string url_or_ip, std::string port_num);
 	bool disconnect();
+	bool is_connected();
 
 	bool send_message(std::string message);
 	virtual void on_message_receive(std::string message);

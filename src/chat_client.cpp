@@ -218,7 +218,10 @@ public:
 	    thread = new std::thread([this](){
 			if (io_service_loc.stopped()) io_service_loc.reset(); // reset is required if the io_service has stopped
 			io_service_loc.run();
-			std::cout << "past io_service_loc.run()" << std::endl;
+			std::cout << "disconnection event occured" << std::endl;
+
+			//disconnect(); // this function call is a little sloppy here.  It's purpose is to call disconnect() if the
+						  // disconnection was initiated from the server
 		});
 
 		connected = true;
@@ -238,8 +241,10 @@ public:
 		std::cout << "done." << std::endl;
 
 		connected = false;
-
-		client = 0;
+		delete thread;
+		delete client;
+		client = 0; // < ?? should client be deleted?
+		thread = 0; // < ?? should thread be deleted?
 
 		return true;
 	}

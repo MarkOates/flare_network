@@ -29,10 +29,10 @@ public:
 	NetworkService();
 	~NetworkService();
 
-	void connect(std::string url_or_ip, std::string port_num);
-	void disconnect();
+	bool connect(std::string url_or_ip, std::string port_num);
+	bool disconnect();
 
-	void send_message(std::string message);
+	bool send_message(std::string message);
 	virtual void on_message_receive(std::string message);
 };
 

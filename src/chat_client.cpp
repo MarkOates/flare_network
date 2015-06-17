@@ -190,13 +190,16 @@ public:
 		, connected(false)
 	{
 	}
-	void send_message(char* line)
+	bool send_message(char* line)
 	{
-		if (!client) std::cerr << "Not connected." << std::endl;
+		if (!connected) return false;
 		send_network_message(*client, line);
+		return true;
 	}
-	void connect(std::string url_or_ip, std::string port_num)
+	bool connect(std::string url_or_ip, std::string port_num)
 	{
+		if (connected) return false;
+
 		char *argv1 = new char[url_or_ip.length() + 1];
 		strcpy(argv1, url_or_ip.c_str());
 
@@ -218,9 +221,13 @@ public:
 
 		delete[] argv1;
 		delete[] argv2;
+
+		return true;
 	}
-	void disconnect()
+	bool disconnect()
 	{
+		if (!connected) return false;
+
 		std::cout << "Disconnecting...";
 		client->close();
 		thread->join();
@@ -229,6 +236,8 @@ public:
 		connected = false;
 
 		client = 0;
+
+		return true;
 	}
 };
 
@@ -262,28 +271,30 @@ NetworkService::~NetworkService()
 }
 
 
-void NetworkService::connect(std::string url_or_ip, std::string port_num)
+bool NetworkService::connect(std::string url_or_ip, std::string port_num)
 {
-	_service->connect(url_or_ip, port_num);
+	return _service->connect(url_or_ip, port_num);
 }
 
 
-void NetworkService::disconnect()
+bool NetworkService::disconnect()
 {
-	_service->disconnect();
+	return _service->disconnect();
 }
 
 
-void NetworkService::send_message(std::string message)
+bool NetworkService::send_message(std::string message)
 {
 	if (message.length() < ChatMessage::max_body_length)
 		message.resize(ChatMessage::max_body_length);
 	char *argv1 = new char[message.length() + 1];
 	strcpy(argv1, message.c_str());
 
-	_service->send_message(argv1);
+	bool ret_val = _service->send_message(argv1);
 
 	delete[] argv1;
+
+	return ret_val;
 }
 
 

@@ -8,4 +8,6 @@ msvc-*
 *.o
 *.obj
 
+lib/
+
 

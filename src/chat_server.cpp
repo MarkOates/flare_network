@@ -15,9 +15,17 @@ using boost::asio::ip::tcp;
 class NetworkUser
 {
 public:
+	static int last_id;
+	int id;
+	NetworkUser()
+		: id(++last_id)
+	{}
+	int get_user_id() { return id; }
 	virtual ~NetworkUser() {}
 	virtual void deliver(const NetworkMessage& msg) = 0;
 };
+
+int NetworkUser::last_id = 0;
 
 typedef std::shared_ptr<NetworkUser> NetworkUser_ptr;
 
@@ -59,8 +67,14 @@ public:
 		while (recent_msgs_.size() > max_recent_msgs)
 			recent_msgs_.pop_front();
 
-		for (auto user: users)
-			user->deliver(msg);
+		for (auto user : users)
+		{
+			// only deliver the message if the recipient id matches
+			if ((msg.get_recipient_id() == 0) || user->get_user_id() == msg.get_recipient_id())
+			{
+				user->deliver(msg);
+			}
+		}
 	}
 };
 
@@ -76,7 +90,8 @@ private:
 
 public:
 	NetworkUserSession(tcp::socket socket, NetworkRoom& room)
-		: socket_(std::move(socket))
+		: NetworkUser()
+		, socket_(std::move(socket))
 		, room_(room)
 	{
 		std::cout << "starting session" << std::endl;
@@ -125,7 +140,16 @@ private:
         {
           if (!ec)
           {
+			  // here, I believe, is where a message would be intercepted and parsed
+			  // this is a message that has been sent BY the client TO the server, and
+			  // this app is then responding HERE by delivering the mssage to all the
+			  // users in the room.
+			  read_msg_.set_sender_id(self->get_user_id()); // ?? should this be self->get_user_id() or this->get_user_id()?
             room_.deliver(read_msg_);
+			  // and then here, initiating the task to read the header
+			  // the reason this do_read_header and do_read_body is seperated
+			  // is because the header is fixed length, and the body length is not known
+			  // until it has been extracted from the header
             do_read_header();
           }
           else
@@ -159,6 +183,8 @@ private:
   }
 };
 
+
+
 //----------------------------------------------------------------------
 
 class NetworkServer
@@ -179,6 +205,10 @@ public:
 private:
 	void do_accept()
 	{
+		// do_accept opens up a socket so a new client can connect in.  Once
+		// a user connects, the server opens up another socket for the next user.  
+		// When a user plugs in, a NetworkUserSession is created and launched (with start())
+
 		acceptor_.async_accept(socket_, [this](boost::system::error_code ec)
 		{
 		  if (!ec)

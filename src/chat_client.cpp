@@ -25,24 +25,26 @@ using boost::asio::ip::tcp;
 
 
 
-	static std::vector<std::string> message_log;
-	static boost::mutex message_log_mutex;
-	static int num_new_messages = 0;
-	boost::function<void(std::string)> _on_recieve_message_callback_func;
-	//static void (*_on_recieve_message_callback_func)(std::string) = 0; 
-	
-	void write_log_message(std::string message)
-	{
-		message_log.push_back(message);
-		num_new_messages++;
-		//if (_on_recieve_message_callback_func)
-		//	_on_recieve_message_callback_func(message);
-		_on_recieve_message_callback_func(message);
-	}
+static std::vector<std::string> message_log;
+static boost::mutex message_log_mutex;
+static int num_new_messages = 0;
+boost::function<void(std::string)> _on_recieve_message_callback_func;
+//static void (*_on_recieve_message_callback_func)(std::string) = 0; 
 
-	
-	
-class chat_client
+void write_log_message(std::string message)
+{
+	message_log.push_back(message);
+	num_new_messages++;
+	//if (_on_recieve_message_callback_func)
+	//	_on_recieve_message_callback_func(message);
+	_on_recieve_message_callback_func(message);
+}
+
+
+
+
+
+class NetworkClient
 {
 private:
 	boost::asio::io_service& io_service_;
@@ -51,7 +53,7 @@ private:
 	std::deque<NetworkMessage> write_msgs_;
 
 public:
-	chat_client(boost::asio::io_service& io_service, tcp::resolver::iterator endpoint_iterator)
+	NetworkClient(boost::asio::io_service& io_service, tcp::resolver::iterator endpoint_iterator)
 		: io_service_(io_service)
 		, socket_(io_service)
 	{
@@ -158,18 +160,19 @@ private:
 
 
 
-	void send_network_message(chat_client &c, char* line)
-	{
-		NetworkMessage message;
-		message.body_length(std::strlen(line));
-		std::memcpy(message.body(), line, message.body_length());
-		message.encode_header();
+void send_network_message(NetworkClient &c, char* line)
+{
+	NetworkMessage message;
+	message.body_length(std::strlen(line));
+	std::memcpy(message.body(), line, message.body_length());
+	message.encode_header();
 
-		c.write(message);
-	}
+	c.write(message);
+}
 
 
 
+// this is global (but static).  This should be fixed
 static boost::asio::io_service GLOBAL__io_service;
 
 
@@ -178,7 +181,7 @@ class __NetworkServiceINTERNAL
 {
 private:
 	boost::asio::io_service &io_service_loc;
-	chat_client *client;
+	NetworkClient *client;
 	std::thread *thread;
 	bool connected;
 
@@ -213,7 +216,7 @@ public:
 	    tcp::resolver resolver(io_service_loc);
 	    auto endpoint_iterator = resolver.resolve({ argv1, argv2 });
 
-		client = new chat_client(io_service_loc, endpoint_iterator);
+		client = new NetworkClient(io_service_loc, endpoint_iterator);
 	    //thread = new std::thread([&io_service_loc](){ io_service_loc.run(); });
 	    thread = new std::thread([this](){
 			if (io_service_loc.stopped()) io_service_loc.reset(); // reset is required if the io_service has stopped
@@ -251,18 +254,10 @@ public:
 };
 
 
+
+
+
 #include <flare_network/network_service.hpp>
-
-/*
-class NetworkService
-{
-private:
-	__NetworkServiceINTERNAL *_service;
-
-public:
-
-};
-*/
 
 
 NetworkService::NetworkService()

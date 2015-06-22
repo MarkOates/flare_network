@@ -12,29 +12,29 @@ using boost::asio::ip::tcp;
 
 //----------------------------------------------------------------------
 
-class ChatUser
+class NetworkUser
 {
 public:
-	virtual ~ChatUser() {}
+	virtual ~NetworkUser() {}
 	virtual void deliver(const NetworkMessage& msg) = 0;
 };
 
-typedef std::shared_ptr<ChatUser> ChatUser_ptr;
+typedef std::shared_ptr<NetworkUser> ChatUser_ptr;
 
 //----------------------------------------------------------------------
 
-class ChatRoom
+class NetworkRoom
 {
 private:
-	std::set<ChatUser_ptr> users;
+	std::set<NetworkUser_ptr> users;
 	int max_recent_msgs;
 	std::deque<NetworkMessage> recent_msgs_;
 
 public:
-	ChatRoom()
+	NetworkRoom()
 		: max_recent_msgs(100)
 	{}
-	void join(ChatUser_ptr user)
+	void join(NetworkUser_ptr user)
 	{
 		users.insert(user);
 		/*
@@ -46,7 +46,7 @@ public:
 		std::cout << "Participant (" << user << ") joined!" << std::endl;
 	}
 
-	void leave(ChatUser_ptr user)
+	void leave(NetworkUser_ptr user)
 	{
 		users.erase(user);
 		std::cout << "Participant (" << user << ") left" << std::endl;
@@ -66,20 +66,20 @@ public:
 
 //---------------------------------------------------------------------
 
-class ChatUserSession : public ChatUser, public std::enable_shared_from_this<ChatUserSession>
+class NetworkUserSession : public ChatUser, public std::enable_shared_from_this<ChatUserSession>
 {
 private:
 	tcp::socket socket_;
-	ChatRoom& room_;
+	NetworkRoom& room_;
 	NetworkMessage read_msg_;
 	std::deque<NetworkMessage> write_msgs_;
 
 public:
-	ChatUserSession(tcp::socket socket, ChatRoom& room)
+	NetworkUserSession(tcp::socket socket, ChatRoom& room)
 		: socket_(std::move(socket))
 		, room_(room)
 	{
-		std::cout << "starting chat session" << std::endl;
+		std::cout << "starting session" << std::endl;
 	}
 
 	void start()
@@ -161,15 +161,15 @@ private:
 
 //----------------------------------------------------------------------
 
-class ChatServer
+class NetworkServer
 {
 private:
 	tcp::acceptor acceptor_;
 	tcp::socket socket_;
-	ChatRoom room_;
+	NetworkRoom room_;
 
 public:
-	ChatServer(boost::asio::io_service& io_service, const tcp::endpoint& endpoint)
+	NetworkServer(boost::asio::io_service& io_service, const tcp::endpoint& endpoint)
 		: acceptor_(io_service, endpoint)
 		, socket_(io_service)
 	{
@@ -183,7 +183,7 @@ private:
 		{
 		  if (!ec)
 		  {
-		    std::make_shared<ChatUserSession>(std::move(socket_), room_)->start();
+		    std::make_shared<NetworkUserSession>(std::move(socket_), room_)->start();
 		  }
 
 		  do_accept();
@@ -199,13 +199,13 @@ int main(int argc, char* argv[])
   {
     if (argc < 2)
     {
-      std::cerr << "Usage: ChatServer <port1> [<port2> ...]\n";
+      std::cerr << "Usage: NetworkServer <port1> [<port2> ...]\n";
       return 1;
     }
 
     boost::asio::io_service io_service;
 
-    std::list<ChatServer> servers;
+    std::list<NetworkServer> servers;
     for (int i = 1; i < argc; ++i)
     {
       tcp::endpoint endpoint(tcp::v4(), std::atoi(argv[i]));

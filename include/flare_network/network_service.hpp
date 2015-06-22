@@ -29,7 +29,7 @@ public:
 	NetworkService();
 	~NetworkService();
 
-	bool connect(std::string url_or_ip, std::string port_num);
+	bool connect(std::string domain_or_ip_address, std::string port_num);
 	bool disconnect();
 	bool is_connected();
 

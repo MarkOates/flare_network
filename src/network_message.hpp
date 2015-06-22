@@ -75,7 +75,7 @@ public:
     std::memcpy(data_, header, header_length);
   }
 
-  int get_recipient_id()
+  int get_recipient_id() const
   {
 	  return recipient_id;
   }
@@ -85,7 +85,7 @@ public:
 	  recipient_id = intended_recipient_id;
   }
 
-  int get_sender_id()
+  int get_sender_id() const
   {
 	  return sender_id;
   }

@@ -1,4 +1,4 @@
-#include "network_service.hpp"
+#include <flare_network/network_service.hpp>
 #include <string>
 #include <iostream>
 

@@ -13,6 +13,8 @@ public:
 
   NetworkMessage()
     : body_length_(0)
+	, recipient(0)
+	, sender(0)
   {
   }
 
@@ -73,9 +75,21 @@ public:
     std::memcpy(data_, header, header_length);
   }
 
+  void *get_recipient()
+  {
+	  return recipient;
+  }
+
+  void set_recipient(void *intended_recipient)
+  {
+	  recipient = intended_recipient;
+  }
+
 private:
   char data_[header_length + max_body_length];
   std::size_t body_length_;
+  void *sender;
+  void *recipient;
 };
 
 #endif // CHAT_MESSAGE_HPP

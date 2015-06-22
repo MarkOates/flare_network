@@ -19,7 +19,7 @@ public:
 	virtual void deliver(const NetworkMessage& msg) = 0;
 };
 
-typedef std::shared_ptr<NetworkUser> ChatUser_ptr;
+typedef std::shared_ptr<NetworkUser> NetworkUser_ptr;
 
 //----------------------------------------------------------------------
 
@@ -66,7 +66,7 @@ public:
 
 //---------------------------------------------------------------------
 
-class NetworkUserSession : public ChatUser, public std::enable_shared_from_this<ChatUserSession>
+class NetworkUserSession : public NetworkUser, public std::enable_shared_from_this<NetworkUserSession>
 {
 private:
 	tcp::socket socket_;
@@ -75,7 +75,7 @@ private:
 	std::deque<NetworkMessage> write_msgs_;
 
 public:
-	NetworkUserSession(tcp::socket socket, ChatRoom& room)
+	NetworkUserSession(tcp::socket socket, NetworkRoom& room)
 		: socket_(std::move(socket))
 		, room_(room)
 	{

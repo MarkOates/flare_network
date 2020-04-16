@@ -8,7 +8,7 @@
 #include <boost/asio.hpp>
 #include "network_message.hpp"
 
-using boost::asio::ip::tcp;
+//using boost::asio::ip::tcp;
 
 //----------------------------------------------------------------------
 
@@ -83,13 +83,13 @@ public:
 class NetworkUserSession : public NetworkUser, public std::enable_shared_from_this<NetworkUserSession>
 {
 private:
-	tcp::socket socket_;
+	boost::asio::ip::tcp::socket socket_;
 	NetworkRoom& room_;
 	NetworkMessage read_msg_;
 	std::deque<NetworkMessage> write_msgs_;
 
 public:
-	NetworkUserSession(tcp::socket socket, NetworkRoom& room)
+	NetworkUserSession(boost::asio::ip::tcp::socket socket, NetworkRoom& room)
 		: NetworkUser()
 		, socket_(std::move(socket))
 		, room_(room)
@@ -190,12 +190,12 @@ private:
 class NetworkServer
 {
 private:
-	tcp::acceptor acceptor_;
-	tcp::socket socket_;
+	boost::asio::ip::tcp::acceptor acceptor_;
+	boost::asio::ip::tcp::socket socket_;
 	NetworkRoom room_;
 
 public:
-	NetworkServer(boost::asio::io_service& io_service, const tcp::endpoint& endpoint)
+	NetworkServer(boost::asio::io_service& io_service, const boost::asio::ip::tcp::endpoint& endpoint)
 		: acceptor_(io_service, endpoint)
 		, socket_(io_service)
 	{
@@ -238,7 +238,7 @@ int main(int argc, char* argv[])
     std::list<NetworkServer> servers;
     for (int i = 1; i < argc; ++i)
     {
-      tcp::endpoint endpoint(tcp::v4(), std::atoi(argv[i]));
+      boost::asio::ip::tcp::endpoint endpoint(boost::asio::ip::tcp::v4(), std::atoi(argv[i]));
       servers.emplace_back(io_service, endpoint);
     }
 

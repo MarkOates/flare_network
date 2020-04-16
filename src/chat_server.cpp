@@ -5,8 +5,13 @@
 #include <memory>
 #include <set>
 #include <utility>
-#include <boost/asio.hpp>
+//#include <boost/asio.hpp>
+//#include <asio/awaitable.hpp>
+#include <asio.hpp>
 #include "network_message.hpp"
+
+//using namespace boost;
+
 
 //using boost::asio::ip::tcp;
 
@@ -83,13 +88,13 @@ public:
 class NetworkUserSession : public NetworkUser, public std::enable_shared_from_this<NetworkUserSession>
 {
 private:
-	boost::asio::ip::tcp::socket socket_;
+	asio::ip::tcp::socket socket_;
 	NetworkRoom& room_;
 	NetworkMessage read_msg_;
 	std::deque<NetworkMessage> write_msgs_;
 
 public:
-	NetworkUserSession(boost::asio::ip::tcp::socket socket, NetworkRoom& room)
+	NetworkUserSession(asio::ip::tcp::socket socket, NetworkRoom& room)
 		: NetworkUser()
 		, socket_(std::move(socket))
 		, room_(room)
@@ -117,8 +122,8 @@ private:
   void do_read_header()
   {
     auto self(shared_from_this());
-    boost::asio::async_read(socket_, boost::asio::buffer(read_msg_.data(), NetworkMessage::header_length),
-        [this, self](boost::system::error_code ec, std::size_t /*length*/)
+    asio::async_read(socket_, asio::buffer(read_msg_.data(), NetworkMessage::header_length),
+        [this, self](std::error_code ec, std::size_t /*length*/)
         {
           if (!ec && read_msg_.decode_header())
           {
@@ -134,9 +139,9 @@ private:
   void do_read_body()
   {
     auto self(shared_from_this());
-    boost::asio::async_read(socket_,
-        boost::asio::buffer(read_msg_.body(), read_msg_.body_length()),
-        [this, self](boost::system::error_code ec, std::size_t /*length*/)
+    asio::async_read(socket_,
+        asio::buffer(read_msg_.body(), read_msg_.body_length()),
+        [this, self](std::error_code ec, std::size_t /*length*/)
         {
           if (!ec)
           {
@@ -162,10 +167,10 @@ private:
   void do_write()
   {
     auto self(shared_from_this());
-    boost::asio::async_write(socket_,
-        boost::asio::buffer(write_msgs_.front().data(),
+    asio::async_write(socket_,
+        asio::buffer(write_msgs_.front().data(),
           write_msgs_.front().length()),
-        [this, self](boost::system::error_code ec, std::size_t /*length*/)
+        [this, self](std::error_code ec, std::size_t /*length*/)
         {
           if (!ec)
           {
@@ -190,12 +195,12 @@ private:
 class NetworkServer
 {
 private:
-	boost::asio::ip::tcp::acceptor acceptor_;
-	boost::asio::ip::tcp::socket socket_;
+	asio::ip::tcp::acceptor acceptor_;
+	asio::ip::tcp::socket socket_;
 	NetworkRoom room_;
 
 public:
-	NetworkServer(boost::asio::io_service& io_service, const boost::asio::ip::tcp::endpoint& endpoint)
+	NetworkServer(asio::io_service& io_service, const asio::ip::tcp::endpoint& endpoint)
 		: acceptor_(io_service, endpoint)
 		, socket_(io_service)
 	{
@@ -209,7 +214,7 @@ private:
 		// a user connects, the server opens up another socket for the next user.  
 		// When a user plugs in, a NetworkUserSession is created and launched (with start())
 
-		acceptor_.async_accept(socket_, [this](boost::system::error_code ec)
+		acceptor_.async_accept(socket_, [this](std::error_code ec)
 		{
 		  if (!ec)
 		  {
@@ -233,12 +238,12 @@ int main(int argc, char* argv[])
       return 1;
     }
 
-    boost::asio::io_service io_service;
+    asio::io_service io_service;
 
     std::list<NetworkServer> servers;
     for (int i = 1; i < argc; ++i)
     {
-      boost::asio::ip::tcp::endpoint endpoint(boost::asio::ip::tcp::v4(), std::atoi(argv[i]));
+      asio::ip::tcp::endpoint endpoint(asio::ip::tcp::v4(), std::atoi(argv[i]));
       servers.emplace_back(io_service, endpoint);
     }
 

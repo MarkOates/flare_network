@@ -9,7 +9,7 @@ all:
 
 
 server:
-	$(CC) -std=gnu++11 ./src/chat_server.cpp -o ./bin/chat_server -I../asio/asio/include -I/usr/include -I./include
+	$(CC) -std=gnu++11 ./src/chat_server.cpp -o ./bin/chat_server -I../asio/asio/include -I/usr/include -I./include -lwsock32 -lws2_32
 
 client_ex:
 	$(CC) -std=gnu++11 ./src/chat_client.cpp ./examples/chat_client_ex.cpp -o ./bin/chat_client_ex -I../asio/asio/include -I/usr/include -I./include

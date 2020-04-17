@@ -13,7 +13,8 @@
 //#include <boost/phoenix/bind/bind_member_function.hpp>
 #include <boost/bind.hpp>
 #include <boost/function.hpp>
-#include <boost/thread/mutex.hpp>
+//#include <boost/thread/mutex.hpp>
+#include <mutex>
 #include "network_message.hpp"
 
 
@@ -26,7 +27,8 @@
 
 
 static std::vector<std::string> message_log;
-static boost::mutex message_log_mutex;
+//static boost::mutex message_log_mutex;
+static std::mutex message_log_mutex;
 static int num_new_messages = 0;
 boost::function<void(std::string)> _on_recieve_message_callback_func;
 //static void (*_on_recieve_message_callback_func)(std::string) = 0; 

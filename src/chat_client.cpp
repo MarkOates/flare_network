@@ -1,9 +1,9 @@
-#ifdef _WIN32
+//#ifdef _WIN32
 // these defines are used when building with boost 1.56.0
-#define _WIN32_WINNT 0x0601
-#define _WINSOCK_DEPRECATED_NO_WARNINGS
-#define _CRT_SECURE_NO_WARNINGS
-#endif
+//#define _WIN32_WINNT 0x0601
+//#define _WINSOCK_DEPRECATED_NO_WARNINGS
+//#define _CRT_SECURE_NO_WARNINGS
+//#endif
 
 #include <cstdlib>
 #include <deque>
@@ -11,8 +11,9 @@
 #include <thread>
 #include <boost/asio.hpp>
 //#include <boost/phoenix/bind/bind_member_function.hpp>
-#include <boost/bind.hpp>
-#include <boost/function.hpp>
+//#include <boost/bind.hpp>
+//#include <boost/function.hpp>
+#include <functional>
 //#include <boost/thread/mutex.hpp>
 #include <mutex>
 #include "network_message.hpp"
@@ -30,7 +31,8 @@ static std::vector<std::string> message_log;
 //static boost::mutex message_log_mutex;
 static std::mutex message_log_mutex;
 static int num_new_messages = 0;
-boost::function<void(std::string)> _on_recieve_message_callback_func;
+//boost::function<void(std::string)> _on_recieve_message_callback_func;
+std::function<void(std::string)> _on_recieve_message_callback_func;
 //static void (*_on_recieve_message_callback_func)(std::string) = 0; 
 
 void write_log_message(std::string message)
@@ -267,7 +269,7 @@ NetworkService::NetworkService()
 {
 	_service = new __NetworkServiceINTERNAL();
 	//_on_recieve_message_callback_func = callback_func_ex;
-	_on_recieve_message_callback_func = boost::bind(&NetworkService::on_message_receive, this, _1);
+	_on_recieve_message_callback_func = std::bind(&NetworkService::on_message_receive, this, std::placeholders::_1);
 }
 
 

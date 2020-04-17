@@ -20,7 +20,7 @@
 
 
 
-using boost::asio::ip::tcp;
+//using boost::asio::ip::tcp;
 
 
 
@@ -48,12 +48,12 @@ class NetworkClient
 {
 private:
 	boost::asio::io_service& io_service_;
-	tcp::socket socket_;
+   boost::asio::ip::tcp::socket socket_;
 	NetworkMessage read_msg_;
 	std::deque<NetworkMessage> write_msgs_;
 
 public:
-	NetworkClient(boost::asio::io_service& io_service, tcp::resolver::iterator endpoint_iterator)
+	NetworkClient(boost::asio::io_service& io_service, boost::asio::ip::tcp::resolver::iterator endpoint_iterator)
 		: io_service_(io_service)
 		, socket_(io_service)
 	{
@@ -80,10 +80,10 @@ public:
 	}
 
 private:
-  void do_connect(tcp::resolver::iterator endpoint_iterator)
+  void do_connect(boost::asio::ip::tcp::resolver::iterator endpoint_iterator)
   {
     boost::asio::async_connect(socket_, endpoint_iterator,
-        [this](boost::system::error_code ec, tcp::resolver::iterator)
+        [this](boost::system::error_code ec, boost::asio::ip::tcp::resolver::iterator)
         {
           if (!ec)
           {
@@ -213,7 +213,7 @@ public:
 		char *argv2 = new char[port_num.length() + 1];
 		strcpy(argv2, port_num.c_str());
 
-	    tcp::resolver resolver(io_service_loc);
+      boost::asio::ip::tcp::resolver resolver(io_service_loc);
 	    auto endpoint_iterator = resolver.resolve({ argv1, argv2 });
 
 		client = new NetworkClient(io_service_loc, endpoint_iterator);

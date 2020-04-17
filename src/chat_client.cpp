@@ -9,7 +9,8 @@
 #include <deque>
 #include <iostream>
 #include <thread>
-#include <boost/asio.hpp>
+//#include <boost/asio.hpp>
+#include <asio.hpp>
 //#include <boost/phoenix/bind/bind_member_function.hpp>
 //#include <boost/bind.hpp>
 //#include <boost/function.hpp>
@@ -23,6 +24,9 @@
 
 
 //using boost::asio::ip::tcp;
+
+
+//using namespace boost;
 
 
 
@@ -51,13 +55,13 @@ void write_log_message(std::string message)
 class NetworkClient
 {
 private:
-	boost::asio::io_service& io_service_;
-   boost::asio::ip::tcp::socket socket_;
+	asio::io_service& io_service_;
+   asio::ip::tcp::socket socket_;
 	NetworkMessage read_msg_;
 	std::deque<NetworkMessage> write_msgs_;
 
 public:
-	NetworkClient(boost::asio::io_service& io_service, boost::asio::ip::tcp::resolver::iterator endpoint_iterator)
+	NetworkClient(asio::io_service& io_service, asio::ip::tcp::resolver::iterator endpoint_iterator)
 		: io_service_(io_service)
 		, socket_(io_service)
 	{
@@ -84,10 +88,10 @@ public:
 	}
 
 private:
-  void do_connect(boost::asio::ip::tcp::resolver::iterator endpoint_iterator)
+  void do_connect(asio::ip::tcp::resolver::iterator endpoint_iterator)
   {
-    boost::asio::async_connect(socket_, endpoint_iterator,
-        [this](boost::system::error_code ec, boost::asio::ip::tcp::resolver::iterator)
+    asio::async_connect(socket_, endpoint_iterator,
+        [this](std::error_code ec, asio::ip::tcp::resolver::iterator)
         {
           if (!ec)
           {
@@ -98,9 +102,9 @@ private:
 
   void do_read_header()
   {
-    boost::asio::async_read(socket_,
-        boost::asio::buffer(read_msg_.data(), NetworkMessage::header_length),
-        [this](boost::system::error_code ec, std::size_t /*length*/)
+    asio::async_read(socket_,
+        asio::buffer(read_msg_.data(), NetworkMessage::header_length),
+        [this](std::error_code ec, std::size_t /*length*/)
         {
           if (!ec && read_msg_.decode_header())
           {
@@ -115,9 +119,9 @@ private:
 
   void do_read_body()
   {
-    boost::asio::async_read(socket_,
-        boost::asio::buffer(read_msg_.body(), read_msg_.body_length()),
-        [this](boost::system::error_code ec, std::size_t /*length*/)
+    asio::async_read(socket_,
+        asio::buffer(read_msg_.body(), read_msg_.body_length()),
+        [this](std::error_code ec, std::size_t /*length*/)
         {
           if (!ec)
           {
@@ -141,10 +145,10 @@ private:
 
   void do_write()
   {
-    boost::asio::async_write(socket_,
-        boost::asio::buffer(write_msgs_.front().data(),
+    asio::async_write(socket_,
+        asio::buffer(write_msgs_.front().data(),
           write_msgs_.front().length()),
-        [this](boost::system::error_code ec, std::size_t /*length*/)
+        [this](std::error_code ec, std::size_t /*length*/)
         {
           if (!ec)
           {
@@ -177,14 +181,14 @@ void send_network_message(NetworkClient &c, char* line)
 
 
 // this is global (but static).  This should be fixed
-static boost::asio::io_service GLOBAL__io_service;
+static asio::io_service GLOBAL__io_service;
 
 
 
 class __NetworkServiceINTERNAL
 {
 private:
-	boost::asio::io_service &io_service_loc;
+	asio::io_service &io_service_loc;
 	NetworkClient *client;
 	std::thread *thread;
 	bool connected;
@@ -217,7 +221,7 @@ public:
 		char *argv2 = new char[port_num.length() + 1];
 		strcpy(argv2, port_num.c_str());
 
-      boost::asio::ip::tcp::resolver resolver(io_service_loc);
+      asio::ip::tcp::resolver resolver(io_service_loc);
 	    auto endpoint_iterator = resolver.resolve({ argv1, argv2 });
 
 		client = new NetworkClient(io_service_loc, endpoint_iterator);

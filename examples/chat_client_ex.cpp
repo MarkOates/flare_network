@@ -8,19 +8,22 @@ int main(int argc, char* argv[])
 {
    try
    {
-      std::string ip_or_url = "openvpa.com";
-      std::string port_num = "3000";
+      std::string ip_or_url = "localhost";
+      std::string port_num = "54321";
 
       if (argc != 3)
       {
          std::cout << "Usage: chat_client <host> <port>\n";
-         std::cout << "no values provided, defaulting to openvpa.com 3000" << std::endl;
+         std::cout << "no values provided, defaulting to:" << std::endl;
       }
       else
       {
          ip_or_url = argv[1];
          port_num = argv[2];
       }
+
+      std::cout << "host: " << ip_or_url << std::endl;
+      std::cout << "port: " << port_num << std::endl;
 
       // create the network service object
 

@@ -8,8 +8,8 @@
 
 NetworkMessage::NetworkMessage()
    : body_length_(0)
-  , sender_id(0)
-  , recipient_id(0)
+   , sender_id(0)
+   , recipient_id(0)
 {
 }
 

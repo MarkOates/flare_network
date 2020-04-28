@@ -16,8 +16,6 @@ private:
 	__NetworkServiceINTERNAL *_service;
 
 public:
-	enum { max_message_length = 512 };
-	
 	NetworkService();
 	virtual ~NetworkService();
 

@@ -3,6 +3,8 @@
 #include <flare_network/NetworkClient.hpp>
 
 
+#include <flare_network/globals.hpp>
+
 
 
 static std::vector<std::string> message_log;
@@ -10,7 +12,7 @@ static std::vector<std::string> message_log;
 static std::mutex message_log_mutex;
 static int num_new_messages = 0;
 //boost::function<void(std::string)> _on_recieve_message_callback_func;
-static std::function<void(std::string)> _on_recieve_message_callback_func;
+//static std::function<void(std::string)> _on_recieve_message_callback_func;
 //static void (*_on_recieve_message_callback_func)(std::string) = 0; 
 
 static void write_log_message(std::string message)

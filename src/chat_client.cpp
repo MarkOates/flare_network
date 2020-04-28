@@ -26,6 +26,7 @@
 
 
 #include <flare_network/NetworkClient.hpp>
+#include <flare_network/globals.hpp>
 
 
 
@@ -39,6 +40,7 @@
 
 
 
+/*
 
 static std::vector<std::string> message_log;
 //static boost::mutex message_log_mutex;
@@ -57,6 +59,7 @@ static void write_log_message(std::string message)
 	_on_recieve_message_callback_func(message);
 }
 
+*/
 
 
 

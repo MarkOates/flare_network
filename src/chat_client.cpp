@@ -26,9 +26,10 @@
 
 
 #include <flare_network/NetworkClient.hpp>
+#include <flare_network/NetworkClient.hpp>
+
+
 #include <flare_network/globals.hpp>
-
-
 
 
 
@@ -180,23 +181,23 @@ void NetworkClient::do_write()
 
 
 
+/*
 
 
-
-void send_network_message(NetworkClient &c, char* line)
+static void send_network_message(NetworkClient &c, char* line)
 {
-	NetworkMessage message;
-	message.body_length(std::strlen(line));
-	std::memcpy(message.body(), line, message.body_length());
-	message.encode_header();
+   NetworkMessage message;
+   message.body_length(std::strlen(line));
+   std::memcpy(message.body(), line, message.body_length());
+   message.encode_header();
 
-	c.write(message);
+   c.write(message);
 }
 
 
 
 // this is global (but static).  This should be fixed
-static asio::io_service GLOBAL__io_service;
+//static asio::io_service GLOBAL__io_service;
 
 
 
@@ -337,7 +338,7 @@ void NetworkService::on_message_receive(std::string message)
 }
 
 
-
+*/
 
 
 /*

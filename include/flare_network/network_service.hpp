@@ -27,7 +27,7 @@ public:
 	enum { max_message_length = 512 };
 	
 	NetworkService();
-	~NetworkService();
+	virtual ~NetworkService();
 
 	bool connect(std::string domain_or_ip_address, std::string port_num);
 	bool disconnect();

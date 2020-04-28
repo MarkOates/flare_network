@@ -7,6 +7,8 @@
 #include <iostream>
 
 
+static asio::io_service GLOBAL__io_service;
+
 
 static void send_network_message(NetworkClient &c, char* line)
 {

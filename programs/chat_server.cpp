@@ -8,7 +8,7 @@
 //#include <boost/asio.hpp>
 //#include <asio/awaitable.hpp>
 #include <asio.hpp>
-#include "flare_network/network_message.hpp"
+#include "flare_network/NetworkMessage.hpp"
 
 //using namespace boost;
 

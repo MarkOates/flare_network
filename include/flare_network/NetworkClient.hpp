@@ -2,7 +2,7 @@
 
 
 #include <string>
-#include "flare_network/network_message.hpp"
+#include "flare_network/NetworkMessage.hpp"
 
 
 #include <asio.hpp>

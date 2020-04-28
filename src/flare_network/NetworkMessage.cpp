@@ -7,7 +7,7 @@
 
 
 NetworkMessage::NetworkMessage()
-   : body_length_(0)
+   : body_length(0)
    , sender_id(0)
    , recipient_id(0)
 {
@@ -28,7 +28,7 @@ char* NetworkMessage::data()
 
 std::size_t NetworkMessage::length() const
 {
-   return header_length + body_length_;
+   return header_length + body_length;
 }
 
 
@@ -46,15 +46,15 @@ char* NetworkMessage::body()
 
 std::size_t NetworkMessage::get_body_length() const
 {
-   return body_length_;
+   return body_length;
 }
 
 
 void NetworkMessage::set_body_length(std::size_t new_length)
 {
-   body_length_ = new_length;
-   if (body_length_ > max_body_length)
-      body_length_ = max_body_length;
+   body_length = new_length;
+   if (body_length > max_body_length)
+      body_length = max_body_length;
 }
 
 
@@ -62,10 +62,10 @@ bool NetworkMessage::decode_header()
 {
    char header[header_length + 1] = "";
    std::strncat(header, data_, header_length);
-   body_length_ = std::atoi(header);
-   if (body_length_ > max_body_length)
+   body_length = std::atoi(header);
+   if (body_length > max_body_length)
    {
-      body_length_ = 0;
+      body_length = 0;
       return false;
    }
    return true;
@@ -75,7 +75,7 @@ bool NetworkMessage::decode_header()
 void NetworkMessage::encode_header()
 {
    char header[header_length + 1] = "";
-   std::sprintf(header, "%4d", static_cast<int>(body_length_));
+   std::sprintf(header, "%4d", static_cast<int>(body_length));
    std::memcpy(data_, header, header_length);
 }
 

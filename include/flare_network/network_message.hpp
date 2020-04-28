@@ -1,5 +1,4 @@
-#ifndef CHAT_MESSAGE_HPP
-#define CHAT_MESSAGE_HPP
+#pragma once
 
 #include <cstdio>
 #include <cstdlib>
@@ -101,5 +100,3 @@ private:
   int sender_id;
   int recipient_id;
 };
-
-#endif // CHAT_MESSAGE_HPP

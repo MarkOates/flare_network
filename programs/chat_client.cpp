@@ -1,3 +1,6 @@
+#include <allegro5/allegro.h> // for compatibility with union/Makefile
+
+
 #include <flare_network/NetworkService.hpp>
 #include <string>
 #include <iostream>

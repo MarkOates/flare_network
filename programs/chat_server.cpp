@@ -1,3 +1,6 @@
+#include <allegro5/allegro.h> // for compatibility with union/Makefile
+
+
 #include <cstdlib>
 #include <deque>
 #include <iostream>

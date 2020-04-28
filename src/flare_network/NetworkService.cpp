@@ -1,4 +1,4 @@
-#include <flare_network/network_service.hpp>
+#include <flare_network/NetworkService.hpp>
 
 #include <flare_network/NetworkClient.hpp>
 #include <flare_network/globals.hpp>

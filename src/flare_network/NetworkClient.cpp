@@ -85,18 +85,18 @@ void NetworkClient::do_read_header()
 void NetworkClient::do_read_body()
 {
  asio::async_read(socket_,
-     asio::buffer(read_msg_.body(), read_msg_.body_length()),
+     asio::buffer(read_msg_.body(), read_msg_.get_body_length()),
      [this](std::error_code ec, std::size_t /*length*/)
      {
        if (!ec)
        {
    message_log_mutex.lock();
    //message_log_mutex.lock();
-   std::string message_text(read_msg_.body(), read_msg_.body_length());
+   std::string message_text(read_msg_.body(), read_msg_.get_body_length());
    write_log_message(message_text);
    message_log_mutex.unlock();
    //message_log_mutex.unlock();
-   //std::cout.write(read_msg_.body(), read_msg_.body_length());
+   //std::cout.write(read_msg_.body(), read_msg_.get_body_length());
    //std::cout << "\n";
 
    do_read_header();

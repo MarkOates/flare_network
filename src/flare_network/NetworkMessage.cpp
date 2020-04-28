@@ -50,12 +50,12 @@ std::size_t NetworkMessage::get_body_length() const
 }
 
 
-//void NetworkMessage::set_body_length(std::size_t new_length)
-//{
-   //body_length = new_length;
-   //if (body_length > max_body_length)
-      //body_length = max_body_length;
-//}
+void NetworkMessage::set_body_length(std::size_t new_length)
+{
+   body_length = new_length;
+   if (body_length > max_body_length)
+      body_length = max_body_length;
+}
 
 
 bool NetworkMessage::decode_header()

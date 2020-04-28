@@ -27,7 +27,7 @@ public:
    char* body();
 
    std::size_t get_body_length() const;
-   //void set_body_length(std::size_t new_length);
+   void set_body_length(std::size_t new_length);
 
    bool decode_header();
    void encode_header();

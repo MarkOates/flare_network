@@ -8,6 +8,7 @@ class NetworkMessage
 {
 public:
    enum { header_length = 4 };
+   enum { header_hash_length = 16 };
    enum { max_body_length = 512 };
 
 private:
@@ -26,7 +27,7 @@ public:
    char* body();
 
    std::size_t get_body_length() const;
-   void set_body_length(std::size_t new_length);
+   //void set_body_length(std::size_t new_length);
 
    bool decode_header();
    void encode_header();

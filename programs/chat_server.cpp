@@ -143,7 +143,7 @@ private:
   {
     auto self(shared_from_this());
     asio::async_read(socket_,
-        asio::buffer(read_msg_.body(), read_msg_.body_length()),
+        asio::buffer(read_msg_.body(), read_msg_.get_body_length()),
         [this, self](std::error_code ec, std::size_t /*length*/)
         {
           if (!ec)

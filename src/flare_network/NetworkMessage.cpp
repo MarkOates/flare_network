@@ -44,13 +44,13 @@ char* NetworkMessage::body()
 }
 
 
-std::size_t NetworkMessage::body_length() const
+std::size_t NetworkMessage::get_body_length() const
 {
    return body_length_;
 }
 
 
-void NetworkMessage::body_length(std::size_t new_length)
+void NetworkMessage::set_body_length(std::size_t new_length)
 {
    body_length_ = new_length;
    if (body_length_ > max_body_length)

@@ -1,12 +1,4 @@
-
-
-
-
-
-#ifndef __AF_NETWORK_SERVICE_HEADER
-#define __AF_NETWORK_SERVICE_HEADER
-
-
+#pragma once
 
 
 #include <string>
@@ -36,11 +28,5 @@ public:
 	bool send_message(std::string message);
 	virtual void on_message_receive(std::string message);
 };
-
-
-
-
-#endif
-
 
 

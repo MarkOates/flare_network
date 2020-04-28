@@ -35,13 +35,13 @@ public:
 
 int NetworkUser::last_id = 0;
 
-typedef std::shared_ptr<NetworkUser> NetworkUser_ptr;
-
 //----------------------------------------------------------------------
 
 class NetworkRoom
 {
 private:
+   typedef std::shared_ptr<NetworkUser> NetworkUser_ptr;
+
 	std::set<NetworkUser_ptr> users;
 	int max_recent_msgs;
 	std::deque<NetworkMessage> recent_msgs_;

@@ -17,7 +17,7 @@
 #include <functional>
 //#include <boost/thread/mutex.hpp>
 #include <mutex>
-#include "network_message.hpp"
+#include "flare_network/network_message.hpp"
 
 
 

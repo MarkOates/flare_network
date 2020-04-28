@@ -9,9 +9,6 @@
 #include <deque>
 
 
-//void write_log_message(std::string message);
-
-/*
 class NetworkClient
 {
    private:
@@ -36,6 +33,5 @@ class NetworkClient
 
       void do_write();
 };
-*/
 
 

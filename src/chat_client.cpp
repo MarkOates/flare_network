@@ -25,6 +25,8 @@
 //#include "flare_network/network_message.hpp"
 
 
+#include <flare_network/NetworkClient.hpp>
+
 
 
 
@@ -43,10 +45,10 @@ static std::vector<std::string> message_log;
 static std::mutex message_log_mutex;
 static int num_new_messages = 0;
 //boost::function<void(std::string)> _on_recieve_message_callback_func;
-std::function<void(std::string)> _on_recieve_message_callback_func;
+static std::function<void(std::string)> _on_recieve_message_callback_func;
 //static void (*_on_recieve_message_callback_func)(std::string) = 0; 
 
-void write_log_message(std::string message)
+static void write_log_message(std::string message)
 {
 	message_log.push_back(message);
 	num_new_messages++;
@@ -60,7 +62,7 @@ void write_log_message(std::string message)
 
 
 
-
+/*
 
 NetworkClient::NetworkClient(asio::io_service& io_service, asio::ip::tcp::resolver::iterator endpoint_iterator)
    : io_service_(io_service)
@@ -104,7 +106,7 @@ void NetworkClient::do_read_header()
 {
  asio::async_read(socket_,
      asio::buffer(read_msg_.data(), NetworkMessage::header_length),
-     [this](std::error_code ec, std::size_t /*length*/)
+     [this](std::error_code ec, std::size_t  // length
      {
        if (!ec && read_msg_.decode_header())
        {
@@ -121,7 +123,7 @@ void NetworkClient::do_read_body()
 {
  asio::async_read(socket_,
      asio::buffer(read_msg_.body(), read_msg_.body_length()),
-     [this](std::error_code ec, std::size_t /*length*/)
+     [this](std::error_code ec, std::size_t // length
      {
        if (!ec)
        {
@@ -148,7 +150,7 @@ void NetworkClient::do_write()
  asio::async_write(socket_,
      asio::buffer(write_msgs_.front().data(),
        write_msgs_.front().length()),
-     [this](std::error_code ec, std::size_t /*length*/)
+     [this](std::error_code ec, std::size_t // length
      {
        if (!ec)
        {
@@ -166,6 +168,7 @@ void NetworkClient::do_write()
 }
 
 
+*/
 
 
 

@@ -1,3 +1,6 @@
+/*
+
+
 #include <allegro_flare/allegro_flare.h>
 #include <flare_network/network_service.hpp>
 
@@ -12,7 +15,7 @@ struct ALLEGRO_EVENT_NETWORK_SOURCE {
 	ALLEGRO_EVENT_SOURCE event_source;
 	int field1;
 	int field2;
-	/* etc. */
+	// etc...
 };
 
 ALLEGRO_EVENT_NETWORK_SOURCE *al_create_network_event_source(void)
@@ -147,3 +150,5 @@ int main(int argc, char* argv[])
 	af::run_loop();
 }
 
+
+*/

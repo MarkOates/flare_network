@@ -66,7 +66,10 @@ public:
 
 	virtual void on_message_receive(std::string message) override
    {
-      if (!network_event_source) return;
+      if (!network_event_source)
+      {
+         throw std::runtime_error("Could not \"on_message_receive\" on a nullptr network_event_source");
+      }
       //std::cout << "Boooond>" << message << std::endl;
 
       ALLEGRO_EVENT user_event;

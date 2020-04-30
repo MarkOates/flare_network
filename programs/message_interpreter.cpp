@@ -12,19 +12,6 @@
 bool shutdown_program = false;
 
 
-class SpecialNetworkService : public NetworkService
-{
-public:
-   SpecialNetworkService()
-      : NetworkService()
-   {}
-	virtual void on_message_receive(std::string message) override
-   {
-      std::cout << "Boooond>" << message << std::endl;
-   }
-};
-
-
 
 
 
@@ -58,6 +45,41 @@ static void my_network_event_dtor(ALLEGRO_USER_EVENT *user_event)
 	std::cout << "dtor" << std::endl;
 	delete (std::string *)(user_event->data1);
 }
+
+
+
+
+
+
+
+
+class SpecialNetworkService : public NetworkService
+{
+private:
+	ALLEGRO_EVENT_NETWORK_SOURCE *network_event_source;
+
+public:
+   SpecialNetworkService(ALLEGRO_EVENT_NETWORK_SOURCE *network_event_source=nullptr)
+      : NetworkService()
+      , network_event_source(network_event_source)
+   {}
+
+	virtual void on_message_receive(std::string message) override
+   {
+      if (!network_event_source) return;
+      //std::cout << "Boooond>" << message << std::endl;
+
+      ALLEGRO_EVENT user_event;
+      user_event.type = ALLEGRO_EVENT_NETWORK_RECEIVE_MESSAGE;
+      std::string *msg = new std::string(message);
+      user_event.user.data1 = (intptr_t)(msg);
+      al_emit_user_event(&network_event_source->event_source, &user_event, my_network_event_dtor);
+   }
+};
+
+
+
+
 
 
 
@@ -98,7 +120,7 @@ int main(int argc, char* argv[])
 
       // create the network service object
 
-      SpecialNetworkService *network_service = new SpecialNetworkService();
+      SpecialNetworkService *network_service = new SpecialNetworkService(network_event_source);
       network_service->connect(ip_or_url, port_num);
 
       // for this example, we'll use the cin to get input from the user
@@ -112,7 +134,13 @@ int main(int argc, char* argv[])
          switch (current_event.type)
          {
          case ALLEGRO_EVENT_NETWORK_RECEIVE_MESSAGE:
-            std::cout << "message received" << std::endl;
+            {
+               //std::cout << "message received" << std::endl;
+               std::string message = *(std::string *)(current_event.user.data1);
+               std::cout << "message received: " << message << std::endl;
+               //main_project_screen->receive_signal("NETWORK_EVENT", (void *)(af::current_event->user.data1));
+               al_unref_user_event(&current_event.user);
+            }
             break;
          default:
             break;

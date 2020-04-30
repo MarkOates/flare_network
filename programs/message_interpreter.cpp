@@ -86,6 +86,17 @@ public:
 
 
 
+class DaemusReciever
+{
+public:
+   void process_message(std::string message)
+   {
+      std::cout << "message received: " << message << std::endl;
+   }
+};
+
+
+
 
 
 
@@ -100,6 +111,9 @@ int main(int argc, char* argv[])
 	ALLEGRO_EVENT_NETWORK_SOURCE *network_event_source;
    network_event_source = al_create_network_event_source();
    al_register_event_source(event_queue, &network_event_source->event_source);
+
+
+   DaemusReciever dameus_receiver;
 
 
    try
@@ -140,9 +154,10 @@ int main(int argc, char* argv[])
             {
                //std::cout << "message received" << std::endl;
                std::string message = *(std::string *)(current_event.user.data1);
-               std::cout << "message received: " << message << std::endl;
+               //std::cout << "message received: " << message << std::endl;
                //main_project_screen->receive_signal("NETWORK_EVENT", (void *)(af::current_event->user.data1));
                al_unref_user_event(&current_event.user);
+               dameus_receiver.process_message(message);
             }
             break;
          default:
